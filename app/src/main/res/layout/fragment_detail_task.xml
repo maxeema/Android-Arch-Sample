@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".presentation.taskdetail.TaskDetailFragment">
+
+    <data>
+        <variable name="model" type="com.majestykapps.arch.presentation.taskdetail.TaskDetailViewModel" />
+        <variable name="resource" type="com.majestykapps.arch.data.common.Resource" />
+        <import type="com.majestykapps.arch.util.NetworkUtils" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            app:expanded="true"
+            app:liftOnScroll="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                android:id="@+id/toolbar"
+                android:visibility="visible"
+                app:titleCentered="true"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:title="@string/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ScrollView
+            app:layout_anchor="@id/appbar"
+            app:layout_anchorGravity="bottom"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            visibleOn="@{!model.loadingEvent &amp;&amp; model.isSuccess}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/spacing_large"
+                android:paddingHorizontal="@dimen/spacing_large">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="2"
+                    android:textAppearance="?textAppearanceHeadline4"
+                    android:textColor="@color/titleColor"
+                    android:text="@{ model.title }"
+                    app:layout_constraintBottom_toTopOf="@+id/description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="New Task X" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@{ model.description }"
+                    android:textAppearance="?textAppearanceBody1"
+                    android:textColor="@color/descriptionColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title"
+                    tools:text="New task description X" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+        <RelativeLayout android:id="@+id/error_box"
+            visibleOn="@{!model.loadingEvent &amp;&amp; !model.isSuccess}"
+            tools:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/error_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                android:text="@{!model.loadingEvent &amp;&amp; NetworkUtils.isConnectionError(model.errorEvent) ? @string/cant_get_task_details_check_internet : @string/cant_get_task_details }"
+                android:textAlignment="center"
+                tools:text="@string/cant_get_task_details_check_internet" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/refresh_btn"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:layout_width="wrap_content"
+                android:layout_below="@id/error_msg"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/refresh_btn" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:visibleOn="@{ model.loadingEvent }"
+            android:indeterminateTint="?colorPrimary"
+            android:layout_gravity="center" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Majestyk Arch</string>
+
+    <string name="cant_get_tasks_check_internet">Can\'t get the tasks list.\nPlease, check Internet.</string>
+    <string name="cant_get_tasks">Can\'t get the tasks list</string>
+
+    <string name="cant_refresh_tasks_check_internet">Can\'t refresh the tasks list.\nPlease, check Internet.</string>
+    <string name="cant_refresh_tasks">Can\'t refresh the tasks list</string>
+
+    <string name="cant_get_task_details_check_internet">Can\'t get the task details.\nPlease, check Internet.</string>
+    <string name="cant_get_task_details">Can\'t get the task details</string>
+
+    <string name="retry_btn">Retry</string>
+    <string name="refresh_btn">Refresh</string>
+
+    <string name="tasks_not_found_msg">There are no tasks found</string>
+    <string name="search_empty_msg">Nothing found with the search criteria</string>
+</resources>

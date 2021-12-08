@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".presentation.tasks.TasksFragment">
+
+    <data>
+        <variable name="model" type="com.majestykapps.arch.presentation.tasks.TasksViewModel" />
+        <variable name="searchModel" type="com.majestykapps.arch.presentation.tasks.TasksSearchViewModel" />
+        <variable name="resource" type="com.majestykapps.arch.data.common.Resource" />
+        <import type="com.majestykapps.arch.util.NetworkUtils" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            app:expanded="true"
+            app:liftOnScroll="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                android:id="@+id/toolbar"
+                android:visibility="visible"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:title="@string/app_name"
+                app:titleCentered="true"
+                app:menu="@menu/search_menu"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            visibleOn="@{ model.areTasksLoaded }"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:id="@+id/swipeRefresh"
+            android:enabled="@{ model.areTasksLoaded }"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fadingEdgeLength="25dp"
+                android:requiresFadingEdge="vertical"
+                android:scrollbarStyle="insideOverlay"
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/tasks_list_item"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <RelativeLayout android:id="@+id/empty_search"
+            visibleOn="@{ !model.hasDataToShow &amp;&amp; model.areTasksLoaded &amp;&amp; searchModel.hasQuery }"
+            tools:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/spacing_normal"
+                android:text="@string/search_empty_msg"
+                android:textAlignment="center"
+                tools:text="@string/search_empty_msg" />
+
+        </RelativeLayout>
+
+        <RelativeLayout android:id="@+id/error_box"
+            visibleOn="@{ model.isFailure &amp;&amp; !model.areTasksLoaded }"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/error_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:src="@{ model.isFailure &amp;&amp; NetworkUtils.isConnectionError(model.errorEvent) ? @drawable/ic_connection_error : null}"
+                tools:src="@drawable/ic_connection_error" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/error_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/error_img"
+                android:layout_centerHorizontal="true"
+                android:text="@{ model.isFailure &amp;&amp; NetworkUtils.isConnectionError(model.errorEvent) ? @string/cant_get_tasks_check_internet : @string/cant_get_tasks }"
+                android:textAlignment="center"
+                app:layout_anchor="@id/error_img"
+                app:layout_anchorGravity="bottom|center_horizontal"
+                tools:text="@string/cant_get_tasks_check_internet" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/retry_btn"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_width="wrap_content"
+                android:layout_below="@id/error_msg"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/retry_btn" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            tools:visibility="invisible"
+            android:id="@+id/empty_box"
+            visibleOn="@{ model.isSuccess &amp;&amp; !model.hasDataToShow &amp;&amp; model.areTasksLoaded &amp;&amp; !searchModel.hasQuery }"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/empty_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/empty_msg"
+                android:layout_centerHorizontal="true"
+                android:text="@string/tasks_not_found_msg"
+                android:textAlignment="center"
+                app:layout_anchorGravity="center"
+                tools:text="@string/tasks_not_found_msg" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/refresh_btn"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_width="wrap_content"
+                android:layout_below="@id/empty_msg"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/refresh_btn" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="?colorPrimary"
+            app:visibleOn="@{ model.isLoading  &amp;&amp; !model.areTasksLoaded }"
+            android:layout_gravity="center" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>
+

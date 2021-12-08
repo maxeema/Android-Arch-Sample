@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <dimen name="spacing_normal">8dp</dimen>
+    <dimen name="spacing_large">16dp</dimen>
+    <dimen name="listing_item_margin_horizontal">16dp</dimen>
+    <dimen name="listing_item_margin_vertical">16dp</dimen>
+    <dimen name="snackbar_margin_horizontal">8dp</dimen>
+    <dimen name="snackbar_margin_vertical">12dp</dimen>
+</resources>
